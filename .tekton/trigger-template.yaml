@@ -57,6 +57,10 @@ spec:
       serviceAccountName: service-account
       pipelineRef:
         name: application-pipeline
+      resources:
+        - name: git-source
+          resourceRef:
+            name: git-source
       params:
       - name: docker-password
         value: $(params.DOCKER-PASSWORD)

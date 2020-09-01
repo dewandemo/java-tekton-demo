@@ -64,3 +64,11 @@ spec:
       params:
       - name: docker-password
         value: $(params.DOCKER-PASSWORD)
+      - name: pathToContext
+        value: "src"
+      - name: pathToYamlFile
+        value: "deploy.yaml"
+      - name: imageUrl
+        value: "index.docker.io/dewandemo/j4kio-java-tekton"
+      - name: "imageTag"
+        value: "0.0.1"

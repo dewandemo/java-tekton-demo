@@ -1,0 +1,70 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: trigger-template
+spec:
+  params:
+  - name: git-repo-url
+    description: URL for the git repository
+  - name: docker-password
+    description: docker-password
+  - name: pathToContext
+    description: pathToContext
+  - name: pathToYamlFile
+    description: pathToYamlFile
+  - name: imageUrl
+    description: imageUrl
+  - name: imageTag
+    description: imageTag
+
+  resourcetemplates:
+
+  - apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: service-account
+    secrets:
+    - name: docker-secret
+
+  - kind: Role
+    apiVersion: rbac.authorization.k8s.io/v1
+    metadata:
+      namespace: default
+      name: pipeline-role
+    rules:
+    - apiGroups: ["extensions", "apps", ""]
+      resources: ["services", "deployments", "pods"]
+      verbs: ["get", "create", "update", "patch", "list", "delete"]
+
+  - apiVersion: rbac.authorization.k8s.io/v1
+    kind: RoleBinding
+    metadata:
+      name: pipeline-role-binding
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: Role
+      name: pipeline-role
+    subjects:
+    - kind: ServiceAccount
+      name: service-account
+      namespace: default
+
+  - apiVersion: tekton.dev/v1alpha1
+    kind: PipelineRun
+    metadata:
+      name: application-pipeline-run
+    spec:
+      serviceAccountName: service-account
+      pipelineRef:
+        name: application-pipeline
+      params:
+      - name: docker-password
+        value: $(params.DOCKER-PASSWORD)
+      - name: pathToContext
+        value: "src"
+      - name: pathToYamlFile
+        value: "deploy.yaml"
+      - name: imageUrl
+        value: "index.docker.io/dewandemo/j4kio-java-tekton"
+      - name: "imageTag"
+        value: "0.0.1"

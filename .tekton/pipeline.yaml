@@ -24,12 +24,6 @@ spec:
     taskRef:
       name: build-image-from-source
     params:
-      - name: pathToContext
-        value: "$(params.pathToContext)"
-      - name: imageUrl
-        value: "$(params.imageUrl)"
-      - name: imageTag
-        value: "$(params.imageTag)"
     resources:
       inputs:
         - name: git-source

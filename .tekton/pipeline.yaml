@@ -27,4 +27,4 @@ spec:
     resources:
       inputs:
         - name: git-source
-          resource: git
+          resource: git-source
